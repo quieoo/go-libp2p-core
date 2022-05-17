@@ -4,6 +4,7 @@ package routing
 import (
 	"context"
 	"errors"
+	"github.com/libp2p/go-libp2p-kad-dht/providers"
 
 	ci "github.com/libp2p/go-libp2p-core/crypto"
 	"github.com/libp2p/go-libp2p-core/peer"
@@ -34,6 +35,14 @@ type ContentRouting interface {
 	// When count is 0, this method will return an unbounded number of
 	// results.
 	FindProvidersAsync(context.Context, cid.Cid, int) <-chan peer.AddrInfo
+}
+type ProviderManagerRouting interface {
+	Provide(context.Context, cid.Cid, bool) error
+	FindProvidersAsync(context.Context, cid.Cid, int) <-chan peer.AddrInfo
+	GetProviderManager() *providers.ProviderManager
+	ProvideTo(context.Context, cid.Cid, peer.ID) error
+	FindProviderFrom(ctx context.Context, c cid.Cid, p peer.ID) ([]peer.ID, error)
+	SelfID() peer.ID
 }
 
 // PeerRouting is a way to find address information about certain peers.
